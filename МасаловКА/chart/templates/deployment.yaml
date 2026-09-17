@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "echo-chart.fullname" . }}
+  labels:
+    {{- include "echo-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "echo-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "echo-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: echo
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              apk add --no-cache busybox-extras
+              echo '{{ .Values.echoText }}' > /tmp/index.html
+              busybox-extras httpd -f -p {{ .Values.containerPort }} -h /tmp
+          ports:
+            - containerPort: {{ .Values.containerPort }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
