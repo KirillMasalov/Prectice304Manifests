@@ -1,0 +1,12 @@
+apiVersion: v2
+name: hello-app
+description: Демо-HTTP-приложение с безопасным деплоем, PV/PVC и NetworkPolicy
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - demo
+  - nginx
+  - gitops
+maintainers:
+  - name: DevOps Team

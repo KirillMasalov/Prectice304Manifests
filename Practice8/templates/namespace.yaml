@@ -1,0 +1,11 @@
+{{- if .Values.namespace.create }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespace.name }}
+  labels:
+    pod-security.kubernetes.io/enforce: {{ .Values.namespace.podSecurityEnforce }}
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/audit: {{ .Values.namespace.podSecurityEnforce }}
+    pod-security.kubernetes.io/warn: {{ .Values.namespace.podSecurityEnforce }}
+{{- end }}

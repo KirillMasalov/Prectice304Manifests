@@ -1,0 +1,72 @@
+namespace:
+  create: false
+  name: hello-app
+  podSecurityEnforce: restricted
+
+nameOverride: hello
+appName: hello-app
+
+replicaCount: 1
+
+image:
+  repository: nginxinc/nginx-unprivileged
+  tag: "1.27-alpine"
+  pullPolicy: IfNotPresent
+
+initImage:
+  repository: busybox
+  tag: "1.36.1"
+  pullPolicy: IfNotPresent
+
+app:
+  responseText: "Hello from Kubernetes! Response loaded from PV."
+  containerPort: 8080
+
+persistence:
+  enabled: true
+  storageClassName: local-path
+  accessMode: ReadWriteOnce
+  size: 1Gi
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  host: hello.example.com
+  path: /
+  pathType: Prefix
+  tls: []
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+networkPolicy:
+  enabled: true
+  ingressNamespace: ingress-nginx
+
+
+serviceAccount:
+  create: true
+  name: hello-app-sa
+
+rbac:
+  create: true
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
